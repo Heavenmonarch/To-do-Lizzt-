@@ -1,39 +1,63 @@
 {% extends 'base.html' %}
 
-{% block head %}
-<title>To-do Lizzt!</title>
-{% endblock %}
+{% block title %}Your list | To-do Lizzt{% endblock %}
 
 {% block body %}
-<div class="content">
-    <h1>To-do Liztt!</h1>
+<header class="topbar">
+    <a class="brand" href="{{ url_for('index') }}" aria-label="To-do Lizzt home">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>To-do Lizzt<span class="brand-period">.</span></span>
+    </a>
+    <span class="topbar-label">PERSONAL WORKSPACE</span>
+</header>
 
-    {% if tasks | length < 1 %}
-    <h3>There are no tasks... Create one here!</h3>
-    {% else %}
+<main class="page-main">
+    <section class="page-heading" aria-labelledby="page-title">
+        <div>
+            <p class="eyebrow">A LITTLE MORE ORDER</p>
+            <h1 id="page-title">Your task list<span class="heading-period">.</span></h1>
+            <p class="heading-copy">Keep your next steps in one clear place.</p>
+        </div>
+        <span class="heading-stamp" aria-hidden="true">TL<span>—</span>01</span>
+    </section>
 
-    <Table>
-        <tr>
-            <th>Task</th>
-            <th>Added</th>
-            <th>Actions</th>
-        </tr>
-        {% for task in tasks  %}
-        <tr>
-            <td>{{task.content}}</td>
-            <td>{{task.created.strftime("%d-%m-%Y")}}</td>
-            <td>
-                <a href="/delete/{{task.id}}">Delete</a>
-                <br>
-                <a href="/edit/{{task.id}}">Edit</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </Table>
-    {% endif %}
-    <form action="/" method="POST">
-        <input type="text" name="content" id="content">
-        <input type="submit" name="submit" value="Add Task" id="btn_add">
+    <form class="task-form" action="{{ url_for('index') }}" method="POST">
+        <label class="visually-hidden" for="content">Add a task</label>
+        <input type="text" name="content" id="content" maxlength="100" placeholder="What needs your attention?" required>
+        <button type="submit" class="add-button"><span aria-hidden="true">+</span> Add task</button>
     </form>
-</div>
+
+    <section class="task-section" aria-labelledby="tasks-heading">
+        <div class="section-heading">
+            <h2 id="tasks-heading">Your list</h2>
+            <span class="task-count">{{ tasks | length }} task{% if tasks | length != 1 %}s{% endif %}</span>
+        </div>
+
+        {% if tasks | length < 1 %}
+        <div class="empty-state">
+            <span class="empty-mark" aria-hidden="true">+</span>
+            <h3>Nothing on the list yet</h3>
+            <p>Your tasks will show up here.</p>
+        </div>
+        {% else %}
+        <ul class="task-list">
+            {% for task in tasks %}
+            <li class="task-row">
+                <span class="task-number">{{ "%02d" | format(loop.index) }}</span>
+                <div class="task-details">
+                    <p class="task-title">{{ task.content }}</p>
+                    <time class="task-date" datetime="{{ task.created.isoformat() }}">Added {{ task.created.strftime("%b %d, %Y") }}</time>
+                </div>
+                <div class="task-actions">
+                    <a class="edit-link" href="{{ url_for('edit', id=task.id) }}">Edit</a>
+                    <a class="delete-link" href="{{ url_for('delete', id=task.id) }}" aria-label="Delete {{ task.content }}">Delete</a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </section>
+
+    <footer class="page-footer"><span>TO-DO LIZZT</span><span>One step at a time.</span></footer>
+</main>
 {% endblock %}

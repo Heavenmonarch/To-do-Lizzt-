@@ -1,16 +1,31 @@
 {% extends 'base.html' %}
 
-{% block head %}
-<title>To-do Liztt!</title>
-{% endblock %}
+{% block title %}Edit task | To-do Lizzt{% endblock %}
 
 {% block body %}
-    <div class="content">
-        <h1>Edit your task</h1>
-        <form action="/edit/{{task.id}}" method="POST">
-            <input type="text" name="content" id="content" value="{{task.content}}">
-            <input type="submit" value="Update" id="btn_add">
+<header class="topbar">
+    <a class="brand" href="{{ url_for('index') }}" aria-label="To-do Lizzt home">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>To-do Lizzt<span class="brand-period">.</span></span>
+    </a>
+    <span class="topbar-label">PERSONAL WORKSPACE</span>
+</header>
 
+<main class="page-main edit-main">
+    <a class="back-link" href="{{ url_for('index') }}"><span aria-hidden="true">←</span> Back to your list</a>
+    <section class="edit-section" aria-labelledby="page-title">
+        <p class="eyebrow">TASK DETAILS</p>
+        <h1 id="page-title">Edit task<span class="heading-period">.</span></h1>
+        <p class="heading-copy">Make the wording just right.</p>
+
+        <form class="edit-form" action="{{ url_for('edit', id=task.id) }}" method="POST">
+            <label for="content">Task</label>
+            <input type="text" name="content" id="content" value="{{ task.content }}" maxlength="100" required autofocus>
+            <div class="edit-actions">
+                <button type="submit" class="add-button">Save changes</button>
+                <a class="cancel-link" href="{{ url_for('index') }}">Cancel</a>
+            </div>
         </form>
-    </div>
+    </section>
+</main>
 {% endblock %}
